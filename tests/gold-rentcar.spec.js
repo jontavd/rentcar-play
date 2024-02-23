@@ -1,6 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
+const SheetsAppendValues = require('./sheets_append_values');
 
 const monthMap = {
   'Janeiro': 1,
@@ -16,6 +17,10 @@ const monthMap = {
   'Novembro': 11,
   'Dezembro': 12
 };
+
+const spreadsheetId = '1BWocsH5u98jUbJ9l8ISWTEQDX9dcrUGzWKJCM6l79kU';
+const range = 'Goldcar';
+const valueInputOption = 'USER_ENTERED';
 
 function getNextWeekendDays(count) {
   const today = new Date();
@@ -33,7 +38,7 @@ function getNextWeekendDays(count) {
   return weekendDays;
 }
 
-const nextWeekendDays = getNextWeekendDays(18);
+const nextWeekendDays = getNextWeekendDays(4);
 
 function getPairsOfPickupDropoffDays(nextWeekendDays) {
   const pairs = [];
@@ -41,7 +46,7 @@ function getPairsOfPickupDropoffDays(nextWeekendDays) {
     for (let j = i + 1; j < nextWeekendDays.length; j++) {
       const pickupDate = new Date(nextWeekendDays[i]);
       const dropoffDate = new Date(nextWeekendDays[j]);
-      const daysDifference = Math.floor((dropoffDate - pickupDate) / (1000 * 60 * 60 * 24));
+      const daysDifference = Math.floor((Number(dropoffDate) - Number(pickupDate)) / (1000 * 60 * 60 * 24));
       if (daysDifference >= 2 && daysDifference <= 28) {
         pairs.push([nextWeekendDays[i], nextWeekendDays[j]]);
       }
@@ -64,6 +69,7 @@ for (const pair of pairs) {
   
   let actualDate;
   let actualHour;
+  let priorDays;
   let dropoffLocator = '.nombre-meses-dias-right'
 
   for (const city of ['Lisboa', 'Porto']) {
@@ -107,6 +113,13 @@ for (const pair of pairs) {
       
       actualDate = new Date().toISOString().split('T')[0];
       actualHour = new Date().toISOString().split('T')[1].split('.')[0];
+      let ta_actualDate = new Date(actualDate);
+      let ta_pickup = new Date(pickup);
+      let ta_dropoff = new Date(dropoff);
+      let diftime = ta_pickup.getTime() - ta_actualDate.getTime();
+      priorDays = (diftime / (1000 * 60 * 60 * 24));
+      let diftime2 = ta_dropoff.getTime() - ta_pickup.getTime();
+      let durationDays = (diftime2 / (1000 * 60 * 60 * 24));      
       console.log("actualDate: " + actualDate);
       console.log("actualHour: " + actualHour);
       console.log("city: " + city);
@@ -114,8 +127,10 @@ for (const pair of pairs) {
       console.log("dropoff: " + dropoff);
       console.log("priceKeyGo: " + priceKeyGo);
       console.log("priceCrazy: " + priceCrazy);
-
-      fs.writeFileSync('output.csv', `${actualDate};${actualHour};${city};${pickup};${dropoff};${priceKeyGo.split(" ")[0].toString()};${priceCrazy.split(" ")[0].toString()}\n` , {flag: 'a', encoding: 'utf-8'});
+      console.log("priorDays: " + priorDays);
+      console.log("durationDays: " + durationDays);
+      // fs.writeFileSync('output.csv', `${actualDate};${actualHour};${city};${pickup};${dropoff};${priceKeyGo.split(" ")[0].toString()};${priceCrazy.split(" ")[0].toString()}\n` , {flag: 'a', encoding: 'utf-8'});
+      await SheetsAppendValues.appendValues(spreadsheetId, range, valueInputOption, [[actualDate, actualHour, city, pickup, dropoff, priceKeyGo.split(" ")[0].toString(), priceCrazy.split(" ")[0].toString(), priorDays.toString(), durationDays.toString()]]);
     });
   }
 }
