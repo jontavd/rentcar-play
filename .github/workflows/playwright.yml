@@ -20,7 +20,7 @@ jobs:
     - name: Run Playwright tests
       run: npx playwright test
       env:
-        GOOGLE_APPLICATION_CREDENTIALS=: ${{ secrets.PRIVATE_KEY }}
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.PRIVATE_KEY }}
     - uses: actions/upload-artifact@v3
       if: always()
       with:
