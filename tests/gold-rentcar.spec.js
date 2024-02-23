@@ -38,7 +38,7 @@ function getNextWeekendDays(count) {
   return weekendDays;
 }
 
-const nextWeekendDays = getNextWeekendDays(4);
+const nextWeekendDays = getNextWeekendDays(18);
 
 function getPairsOfPickupDropoffDays(nextWeekendDays) {
   const pairs = [];
