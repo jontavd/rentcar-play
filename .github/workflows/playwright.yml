@@ -4,6 +4,7 @@ on:
   #   branches: [ main, master ]
   # pull_request:
   #   branches: [ main, master ]
+  workflow_dispatch:
   schedule:
     - cron: '0 4 * * *'
 jobs:
