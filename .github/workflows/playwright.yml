@@ -25,7 +25,7 @@ jobs:
         credentials_json: ${{ secrets.PRIVATE_KEY }}
     - name: Run Playwright tests
       run: npx playwright test
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: always()
       with:
         name: playwright-report
