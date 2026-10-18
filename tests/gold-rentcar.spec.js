@@ -66,7 +66,7 @@ function isSameMonth(date1, date2) {
 for (const pair of pairs) {
   const pickup = pair[0];
   const dropoff = pair[1];
-  
+
   let actualDate;
   let actualHour;
   let priorDays;
@@ -75,15 +75,19 @@ for (const pair of pairs) {
   for (const city of ['Lisboa', 'Porto']) {
     test(`city: ${city} - pickup: ${pickup} - dropoff: ${dropoff}`, async ({ page }) => {
       await page.goto('https://www.goldcar.es/pt/');
+
       await page.getByLabel('Agree and close: Agree to our')?.click();
-        
-      await page.getByRole('textbox', { name: 'Aeroporto, Cidade,' }).fill(city);
+
+      await page.getByRole('button', { name: 'X' }).click({ timeout: 120_000 });
+
+      await page.getByRole('textbox', { name: 'Aeroporto,' }).fill(city);
       await page.keyboard.press('Tab');
+
       if (city === 'Lisboa') {
-        await page.getByRole('link', { name: ' Lisboa Aeroporto (LIS)' }).click();
+        await page.getByRole('link', { name: ' Lisboa Aeroporto (LIS) ' }).click();
       }
       if (city === 'Porto') {
-        await page.getByRole('link', { name: ' Porto Aeroporto (OPO)' }).click();
+        await page.getByRole('link', { name: ' Porto Aeroporto (OPO) ' }).click();
       }
 
       let leftMonth = await page.locator('.texto-mes-left').innerText();
@@ -97,8 +101,8 @@ for (const pair of pairs) {
         dropoffLocator = '.nombre-meses-dias-left'
       }
 
-      await page.locator('.nombre-meses-dias-left').getByText(pickup.split('-')[2].replace(/^0+/, ''), { exact: true}).click();
-      await page.locator(dropoffLocator).getByText(dropoff.split('-')[2].replace(/^0+/, ''), { exact: true}).click();
+      await page.locator('.nombre-meses-dias-left').getByText(pickup.split('-')[2].replace(/^0+/, ''), { exact: true }).click();
+      await page.locator(dropoffLocator).getByText(dropoff.split('-')[2].replace(/^0+/, ''), { exact: true }).click();
 
       await page.locator('#pickuptime').click();
       await page.locator('#hora_19').click();
@@ -107,10 +111,10 @@ for (const pair of pairs) {
 
       await page.locator('#btn-buscar').click();
       await page.waitForLoadState('networkidle');
+       
+      const priceKeyGo = await page.locator('xpath=//*[@id="AA-tarifas-4"]/div/div/div[2]/div/div[2]/div/div[2]/div[2]/div[2]').first().innerText();
+      const priceCrazy = await page.locator('xpath=//*[@id="AA-tarifas-4"]/div/div/div[2]/div/div[4]/div/div[2]/div[2]/div[2]').first().innerText();
 
-      const priceKeyGo = await page.locator("div#CC-tarifas-4.row.vehiculo.new-tarifas-4.testab180618_v2.padding-15 div.col-xs-12.descripcion div.row div.col-xs-12.col-md-7.precio div.row div.col-xs-12.col-sm-4.pull-right.tarifa-dispo div.tipo-tarifa div.precioTarifa.PackKeyngo div.precio-dispo-diario.mouseover-tarifa-1.margin-top-5 div.precio_dia").first().innerText();
-      const priceCrazy = await page.locator("div#CC-tarifas-4.row.vehiculo.new-tarifas-4.testab180618_v2.padding-15 div.col-xs-12.descripcion div.row div.col-xs-12.col-md-7.precio div.row div.col-xs-12.col-sm-4.pull-right.tarifa-dispo div.tipo-tarifa div.precioTarifa.TNRFullFuelSDC div.precio-dispo-diario.mouseover-tarifa-1.margin-top-5 div.precio_dia").first().innerText();
-      
       actualDate = new Date().toISOString().split('T')[0];
       actualHour = new Date().toISOString().split('T')[1].split('.')[0];
       let ta_actualDate = new Date(actualDate);
@@ -119,7 +123,7 @@ for (const pair of pairs) {
       let diftime = ta_pickup.getTime() - ta_actualDate.getTime();
       priorDays = (diftime / (1000 * 60 * 60 * 24));
       let diftime2 = ta_dropoff.getTime() - ta_pickup.getTime();
-      let durationDays = (diftime2 / (1000 * 60 * 60 * 24));      
+      let durationDays = (diftime2 / (1000 * 60 * 60 * 24));
       console.log("actualDate: " + actualDate);
       console.log("actualHour: " + actualHour);
       console.log("city: " + city);
