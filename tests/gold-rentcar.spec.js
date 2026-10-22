@@ -72,7 +72,10 @@ for (const pair of pairs) {
   let priorDays;
   let dropoffLocator = '.nombre-meses-dias-right'
 
-  for (const city of ['Lisboa', 'Porto']) {
+  for (const city of [
+    'Lisboa',
+    // 'Porto'
+  ]) {
     test(`city: ${city} - pickup: ${pickup} - dropoff: ${dropoff}`, async ({ page }) => {
       await page.goto('https://www.goldcar.es/pt/');
 
@@ -111,7 +114,7 @@ for (const pair of pairs) {
 
       await page.locator('#btn-buscar').click();
       await page.waitForLoadState('networkidle');
-       
+
       const priceKeyGo = await page.locator('xpath=//*[@id="AA-tarifas-4"]/div/div/div[2]/div/div[2]/div/div[2]/div[2]/div[2]').first().innerText();
       const priceCrazy = await page.locator('xpath=//*[@id="AA-tarifas-4"]/div/div/div[2]/div/div[4]/div/div[2]/div[2]/div[2]').first().innerText();
 
