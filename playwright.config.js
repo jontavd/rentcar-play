@@ -35,6 +35,14 @@ module.exports = defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+      use: {
+        ...devices['iPhone 13'],
+        isMobile: true,
+      }
+    },
     // {
     //   name: 'chromium',
     //   use: { ...devices['Desktop Chrome'] },
@@ -56,7 +64,9 @@ module.exports = defineConfig({
       use: {
         ...devices['iPhone 13'],
         isMobile: true,
+        storageState: 'playwright/.auth/user.json',
       },
+      dependencies: ['setup'],
     },
     // {
     //   name: 'Mobile Safari',

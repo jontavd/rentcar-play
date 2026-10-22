@@ -79,9 +79,9 @@ for (const pair of pairs) {
     test(`city: ${city} - pickup: ${pickup} - dropoff: ${dropoff}`, async ({ page }) => {
       await page.goto('https://www.goldcar.es/pt/');
 
-      await page.getByLabel('Agree and close: Agree to our')?.click();
+      // await page.getByLabel('Agree and close: Agree to our')?.click();
 
-      await page.getByRole('button', { name: 'X' }).click({ timeout: 120_000 });
+      // await page.getByRole('button', { name: 'X' }).click({ timeout: 120_000 });
 
       await page.getByRole('textbox', { name: 'Aeroporto,' }).fill(city);
       await page.keyboard.press('Tab');
